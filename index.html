@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Skills Game</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .game-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    input {
+      padding: 0.5rem;
+      margin: 1rem 0;
+      text-align: center;
+      font-size: 1rem;
+      width: 100px;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-card">
+    <h1>🧠 Math Skills Game</h1>
+    <p id="question">Loading...</p>
+    
+    <!-- Input box for the user's answer -->
+    <input type="number" id="answer" placeholder="Your answer" />
+
+    <br />
+    <!-- Optional button for submitting, still usable with mouse -->
+    <button onclick="submitAnswer()">Submit</button>
+
+    <!-- Feedback area -->
+    <p id="feedback"></p>
+
+    <!-- Score display -->
+    <p id="score">Score: 0 / 0</p>
+  </div>
+
+  <script>
+    let currentAnswer = 0;
+    let score = 0;
+    let attempts = 0;
+
+    const answerInput = document.getElementById('answer');
+
+    // Function to get a random number in range
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Generate a new math question and set the correct answer
+    function generateQuestion() {
+      const num1 = getRandomInt(1, 20);
+      const num2 = getRandomInt(1, 20);
+      const operations = ['+', '-', '×'];
+      const operation = operations[getRandomInt(0, operations.length - 1)];
+
+      let answer;
+      switch (operation) {
+        case '+':
+          answer = num1 + num2;
+          break;
+        case '-':
+          answer = num1 - num2;
+          break;
+        case '×':
+          answer = num1 * num2;
+          break;
+      }
+
+      currentAnswer = answer;
+      document.getElementById('question').innerText = `Solve: ${num1} ${operation} ${num2}`;
+
+      // Auto-focus the input box so user can type immediately
+      answerInput.focus();
+    }
+
+    // Called when user submits an answer
+    function submitAnswer() {
+      const userInput = parseInt(answerInput.value);
+      const feedbackEl = document.getElementById('feedback');
+      const scoreEl = document.getElementById('score');
+
+      if (userInput === currentAnswer) {
+        score++;
+        feedbackEl.innerText = '✅ Correct!';
+      } else {
+        feedbackEl.innerText = `❌ Wrong! Correct answer was ${currentAnswer}`;
+      }
+
+      attempts++;
+      scoreEl.innerText = `Score: ${score} / ${attempts}`;
+      answerInput.value = ''; // Clear input
+      generateQuestion();     // Show next question
+    }
+
+    // Handle Enter key to trigger submit
+    answerInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        submitAnswer();
+      }
+    });
+
+    // Auto-focus on load so user can start typing immediately
+    window.onload = () => {
+      generateQuestion();
+      answerInput.focus();
+    };
+  </script>
+</body>
+</html>
